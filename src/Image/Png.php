@@ -17,4 +17,14 @@ class Png extends BaseImage
     {
         return imagecreatefrompng($filename);
     }
+
+    protected function getImageOrientation(string $filename): int
+    {
+        return self::ORIENTATION_TOP;
+    }
+
+    protected function saveImage($image, string $filename): bool
+    {
+        return imagepng($image, $filename);
+    }
 }
