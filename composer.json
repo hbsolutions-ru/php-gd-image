@@ -1,0 +1,24 @@
+{
+    "name": "hbsolutions/php-gd-image",
+    "description": "Classes wrapper for GD image functions.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "HBS Development Team",
+            "email": "dev.hbsolutions@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.3",
+        "ext-exif": "*",
+        "ext-gd": "*",
+        "psr/log": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "HBS\\GdImage\\": "src/"
+        }
+    }
+}
