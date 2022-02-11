@@ -10,14 +10,6 @@ use HBS\GdImage\Exception\UnexpectedValueException;
 
 abstract class BaseImage implements ImageInterface
 {
-    public const HEIGHT = 'height';
-    public const WIDTH = 'width';
-
-    protected const ORIENTATION_TOP = 1;
-    protected const ORIENTATION_BOTTOM = 3;
-    protected const ORIENTATION_RIGHT = 6;
-    protected const ORIENTATION_LEFT = 8;
-
     /**
      * @var string
      */
@@ -72,7 +64,7 @@ abstract class BaseImage implements ImageInterface
     {
         $size = $this->getSize();
 
-        return $size[self::WIDTH] / $size[self::HEIGHT];
+        return $size[self::SIZE_WIDTH] / $size[self::SIZE_HEIGHT];
     }
 
     public function getImage()
@@ -116,15 +108,18 @@ abstract class BaseImage implements ImageInterface
 
             if (in_array(
                 $this->getOrientation(),
-                [self::ORIENTATION_RIGHT, self::ORIENTATION_LEFT],
+                [
+                    self::ORIENTATION_RIGHT,
+                    self::ORIENTATION_LEFT,
+                ],
                 true
             )) {
                 [$width, $height] = [$height, $width];
             }
 
             $this->size = [
-                self::WIDTH => $width,
-                self::HEIGHT => $height,
+                self::SIZE_WIDTH => $width,
+                self::SIZE_HEIGHT => $height,
             ];
         }
 

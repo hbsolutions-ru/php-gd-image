@@ -4,6 +4,14 @@ namespace HBS\GdImage;
 
 interface ImageInterface
 {
+    public const ORIENTATION_TOP = 1;
+    public const ORIENTATION_BOTTOM = 3;
+    public const ORIENTATION_RIGHT = 6;
+    public const ORIENTATION_LEFT = 8;
+
+    public const SIZE_HEIGHT = 'height';
+    public const SIZE_WIDTH = 'width';
+
     public function getAspectRatio(): float;
 
     public function getMediaType(): string;

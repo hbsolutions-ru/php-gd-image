@@ -22,12 +22,11 @@ class Jpeg extends BaseImage
     {
         $exifData = exif_read_data($filename);
         if (!$exifData) {
-            $this->logger->notice(sprintf("Failed to read EXIF data for %s", $filename));
+            $this->logger->warning(sprintf("Failed to read EXIF data for %s", $filename));
             return self::ORIENTATION_TOP;
         }
 
         if (!isset($exifData['Orientation'])) {
-            $this->logger->warning(sprintf("Orientation not found in the EXIF data for %s", $filename));
             return self::ORIENTATION_TOP;
         }
 
