@@ -12,6 +12,8 @@ interface ImageInterface
     public const SIZE_HEIGHT = 'height';
     public const SIZE_WIDTH = 'width';
 
+    public function fitToSizeKeepingAspectRatio(string $filename, int $maxWidth, int $maxHeight): bool;
+
     public function getAspectRatio(): float;
 
     public function getMediaType(): string;

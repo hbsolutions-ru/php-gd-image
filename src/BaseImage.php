@@ -26,7 +26,7 @@ abstract class BaseImage implements ImageInterface
     protected $logger;
 
     /**
-     * @var \GdImage|null
+     * @var \GdImage|resource|null
      */
     protected $gdImage = null;
 
@@ -59,6 +59,43 @@ abstract class BaseImage implements ImageInterface
     abstract protected function getImageOrientation(string $filename): int;
 
     abstract protected function saveImage($image, string $filename): bool;
+
+    public function fitToSizeKeepingAspectRatio(string $filename, int $maxWidth, int $maxHeight): bool
+    {
+        [
+            self::SIZE_WIDTH => $fittedWidth,
+            self::SIZE_HEIGHT => $fittedHeight,
+        ] = $this->getFittedSize($maxWidth, $maxHeight);
+
+        $orientation = $this->getOrientation();
+        $image = $this->getImage();
+
+        switch($orientation) {
+            case self::ORIENTATION_BOTTOM:
+                $image = imagerotate($image,180,0);
+                break;
+            case self::ORIENTATION_RIGHT:
+                $image = imagerotate($image,-90,0);
+                break;
+            case self::ORIENTATION_LEFT:
+                $image = imagerotate($image,90,0);
+                break;
+        }
+
+        $image = imagescale($image, $fittedWidth, $fittedHeight);
+
+        if (!$image) {
+            $this->logger->error(sprintf("Failed to scale image %s", $this->filename));
+            return false;
+        }
+
+        if (!$this->saveImage($image, $filename)) {
+            $this->logger->error(sprintf("Failed to save image to %s", $filename));
+            return false;
+        }
+
+        return true;
+    }
 
     public function getAspectRatio(): float
     {
@@ -124,5 +161,46 @@ abstract class BaseImage implements ImageInterface
         }
 
         return $this->size;
+    }
+
+    protected function getFittedSize(int $maxWidth, int $maxHeight): array
+    {
+        [
+            self::SIZE_WIDTH => $width,
+            self::SIZE_HEIGHT => $height,
+        ] = $this->getSize();
+
+        $frameRatio = $maxWidth / $maxHeight;
+        $ratio = $width / $height;
+
+        if ($ratio > $frameRatio) {
+
+            if ($width > $maxWidth) {
+                return [
+                    self::SIZE_WIDTH => $maxWidth,
+                    self::SIZE_HEIGHT => (int)($maxWidth / $ratio),
+                ];
+            } else {
+                return [
+                    self::SIZE_WIDTH => $width,
+                    self::SIZE_HEIGHT => $height,
+                ];
+            }
+
+        } else {
+
+            if ($height > $maxHeight) {
+                return [
+                    self::SIZE_WIDTH => (int)($maxHeight * $ratio),
+                    self::SIZE_HEIGHT => $maxHeight
+                ];
+            } else {
+                return [
+                    self::SIZE_WIDTH => $width,
+                    self::SIZE_HEIGHT => $height
+                ];
+            }
+
+        }
     }
 }
